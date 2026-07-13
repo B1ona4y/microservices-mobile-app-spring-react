@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-oauth2}
+      POSTGRES_USER: ${POSTGRES_USER:-oauth2}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-oauth2}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  oauth2:
+    build:
+      context: ./oauth2
+    ports:
+      - "8080:8080"
+    environment:
+      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      APP_JWT_ISSUER: ${APP_JWT_ISSUER:-oauth2-demo}
+      APP_JWT_EXPIRY_SECONDS: ${APP_JWT_EXPIRY_SECONDS:-3600}
+      APP_GOOGLE_CLIENT_ID: ${APP_GOOGLE_CLIENT_ID}
+    restart: unless-stopped
