@@ -17,9 +17,20 @@ services:
       context: ./oauth2
     ports:
       - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       APP_JWT_SECRET: ${APP_JWT_SECRET}
       APP_JWT_ISSUER: ${APP_JWT_ISSUER:-oauth2-demo}
       APP_JWT_EXPIRY_SECONDS: ${APP_JWT_EXPIRY_SECONDS:-3600}
       APP_GOOGLE_CLIENT_ID: ${APP_GOOGLE_CLIENT_ID}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-oauth2}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-oauth2}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_OPEN_IN_VIEW: "false"
     restart: unless-stopped
+
+volumes:
+  db_data:

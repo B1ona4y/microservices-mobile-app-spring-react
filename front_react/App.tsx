@@ -3,12 +3,22 @@ import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { useGoogleLogin } from './auth/useGoogleLogin';
+import { RegisterForm } from './auth/RegisterForm';
+import { LoginForm } from './auth/LoginForm';
+
+type Screen = 'choice' | 'register' | 'login' | 'loggedIn';
 
 export default function App() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'loggedIn' | 'error'>('idle');
+  const [screen, setScreen] = useState<Screen>('choice');
+  const [googleStatus, setGoogleStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+
+  const handleAuthSuccess = async (token: string) => {
+    await SecureStore.setItemAsync('auth_token', token);
+    setScreen('loggedIn');
+  };
 
   const { promptAsync, ready } = useGoogleLogin(async (idToken) => {
-    setStatus('loading');
+    setGoogleStatus('loading');
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/google`, {
         method: 'POST',
@@ -17,26 +27,48 @@ export default function App() {
       });
       if (!res.ok) throw new Error(`Backend rejected token: ${res.status}`);
       const { token } = await res.json();
-      await SecureStore.setItemAsync('auth_token', token);
-      setStatus('loggedIn');
+      await handleAuthSuccess(token);
+      setGoogleStatus('idle');
     } catch (e) {
       console.error(e);
-      setStatus('error');
+      setGoogleStatus('error');
     }
   });
 
   return (
     <View style={styles.container}>
-      {status === 'loggedIn' ? (
-        <Text>Вы вошли через Google</Text>
-      ) : (
-        <Button
-          title={status === 'loading' ? 'Вход...' : 'Войти через Google'}
-          disabled={!ready || status === 'loading'}
-          onPress={() => promptAsync().catch(() => setStatus('error'))}
+      {screen === 'loggedIn' && <Text>Вы вошли</Text>}
+
+      {screen === 'choice' && (
+        <>
+          <Button
+            title={googleStatus === 'loading' ? 'Вход...' : 'Войти через Google'}
+            disabled={!ready || googleStatus === 'loading'}
+            onPress={() => promptAsync().catch(() => setGoogleStatus('error'))}
+          />
+          {googleStatus === 'error' && (
+            <Text style={styles.error}>Не удалось войти, попробуйте снова</Text>
+          )}
+          <Button title="Создать аккаунт" onPress={() => setScreen('register')} />
+        </>
+      )}
+
+      {screen === 'register' && (
+        <RegisterForm
+          onSuccess={handleAuthSuccess}
+          onSwitchToLogin={() => setScreen('login')}
+          onBack={() => setScreen('choice')}
         />
       )}
-      {status === 'error' && <Text style={styles.error}>Не удалось войти, попробуйте снова</Text>}
+
+      {screen === 'login' && (
+        <LoginForm
+          onSuccess={handleAuthSuccess}
+          onSwitchToRegister={() => setScreen('register')}
+          onBack={() => setScreen('choice')}
+        />
+      )}
+
       <StatusBar style="auto" />
     </View>
   );
