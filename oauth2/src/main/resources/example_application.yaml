@@ -5,3 +5,13 @@ app:
     expiry-seconds: 3600
   google:
     client-id:
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/oauth2
+    username:
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
