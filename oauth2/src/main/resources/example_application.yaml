@@ -5,6 +5,9 @@ app:
     expiry-seconds: 3600
   google:
     client-id:
+  github:
+    client-id:
+    client-secret:
 
 spring:
   datasource:

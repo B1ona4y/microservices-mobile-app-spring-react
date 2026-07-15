@@ -5,6 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import { useGoogleLogin } from './auth/useGoogleLogin';
 import { RegisterForm } from './auth/RegisterForm';
 import { LoginForm } from './auth/LoginForm';
+import { useGithubLogin } from './auth/useGithubLogin';
 
 type Screen = 'choice' | 'register' | 'login' | 'loggedIn';
 
@@ -35,6 +36,16 @@ export default function App() {
     }
   });
 
+  const { promptAsync: githubPrompt, ready: githubReady } = useGithubLogin(async (code) => {
+    const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/github`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    const { token } = await res.json();
+    await handleAuthSuccess(token);
+  });
+
   return (
     <View style={styles.container}>
       {screen === 'loggedIn' && <Text>Вы вошли</Text>}
@@ -49,6 +60,11 @@ export default function App() {
           {googleStatus === 'error' && (
             <Text style={styles.error}>Не удалось войти, попробуйте снова</Text>
           )}
+          <Button
+            title="Войти через GitHub"
+            disabled={!githubReady}
+            onPress={() => githubPrompt()}
+          />
           <Button title="Создать аккаунт" onPress={() => setScreen('register')} />
         </>
       )}

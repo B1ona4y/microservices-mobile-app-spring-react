@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.oauth2.auth.AuthController.AuthResponse;
 import com.example.oauth2.user.User;
 import com.example.oauth2.user.UserService;
 
@@ -40,6 +41,10 @@ public class AuthController {
 	public record AuthResponse(String token) {
 	}
 
+	public record GithubCodeRequest(String code) {
+
+	}
+
     @PostMapping("/register")
 	public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
 		return userService.register(request.email(), request.name(), request.password())
@@ -67,9 +72,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/github")
-	public ResponseEntity<AuthResponse> github(@RequestBody ProviderTokenRequest request) {
+	public ResponseEntity<AuthResponse> github(@RequestBody GithubCodeRequest request) {
 		try {
-			GitHubTokenVerifier.GitHubUser gitHubUser = gitHubVerifier.verify(request.token());
+			GitHubTokenVerifier.GitHubUser gitHubUser = gitHubVerifier.verify(request.code());
 			User user = userService.findOrCreateOAuthUser(gitHubUser.email(), gitHubUser.name());
 			return ResponseEntity.ok(new AuthResponse(jwtService.issueToken(user.getEmail(), user.getName())));
 		} catch (RuntimeException e) {

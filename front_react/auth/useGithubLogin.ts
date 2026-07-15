@@ -7,14 +7,14 @@ WebBrowser.maybeCompleteAuthSession();
 const discovery = { authorizationEndpoint: 'https://github.com/login/oauth/authorize' }
 
 export function useGithubLogin(onCode: (code: string) => void) {
-    const [request, response, promtAsync] = AuthSession.useAuthRequest(
+    const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
             clientId: process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID!,
             scopes: ['read:user', 'user:email'],
             usePKCE: false,
             redirectUri: AuthSession.makeRedirectUri({ scheme: 'frontreact'})
         },
-        discovery
+        discovery,
     );
 
     useEffect(() => {
@@ -23,5 +23,5 @@ export function useGithubLogin(onCode: (code: string) => void) {
         }
     }, [response])
 
-    return {promtAsync, ready: !!request }
+    return {promptAsync, ready: !!request }
 }

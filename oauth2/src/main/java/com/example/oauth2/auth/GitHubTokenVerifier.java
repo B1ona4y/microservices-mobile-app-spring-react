@@ -1,15 +1,31 @@
 package com.example.oauth2.auth;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Component
 public class GitHubTokenVerifier {
     
     private final RestClient restClient = RestClient.create("https://api.github.com");
+    private final RestClient oauthClient = RestClient.create("https://github.com/login/oauth");
 
-    public GitHubUser verify(String accessToken) {
+    private final String clientId;
+    private final String clientSecret;
+
+    public GitHubTokenVerifier(
+            @Value("${app.github.client-id}") String clientId,
+            @Value("${app.github.client-secret}") String clientSecret) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+    }
+
+    public GitHubUser verify(String code) {
+        String accessToken = exchangeCodeForAccessToken(code);
         GitHubUserResponse response = restClient.get()
                                     .uri("/user")
                                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -21,6 +37,29 @@ public class GitHubTokenVerifier {
         String email = response.email() != null ? response.email() : response.login() + "@users.noreply.github.com";
 		String name = response.name() != null ? response.name() : response.login();
 		return new GitHubUser(email, name);
+    }
+
+    private String exchangeCodeForAccessToken(String code) {
+        AccessTokenResponse response = oauthClient.post()
+                .uri("/access_token")
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new AccessTokenRequest(clientId, clientSecret, code))
+                .retrieve()
+                .body(AccessTokenResponse.class);
+        if (response == null || response.accessToken() == null) {
+            throw new IllegalArgumentException("Failed to exchange GitHub code for an access token");
+        }
+        return response.accessToken();
+    }
+
+    private record AccessTokenRequest(
+        @JsonProperty("client_id") String clientId,
+        @JsonProperty("client_secret") String clientSecret,
+        String code) {
+    }
+
+    private record AccessTokenResponse(@JsonProperty("access_token") String accessToken) {
     }
 
     private record GitHubUserResponse(String login, String name, String email) {
