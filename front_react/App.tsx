@@ -12,6 +12,7 @@ type Screen = 'choice' | 'register' | 'login' | 'loggedIn';
 export default function App() {
   const [screen, setScreen] = useState<Screen>('choice');
   const [googleStatus, setGoogleStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [githubStatus, setGithubStatus] = useState<'idle' | 'loading' | 'error'>('idle');
 
   const handleAuthSuccess = async (token: string) => {
     await SecureStore.setItemAsync('auth_token', token);
@@ -37,13 +38,21 @@ export default function App() {
   });
 
   const { promptAsync: githubPrompt, ready: githubReady } = useGithubLogin(async (code) => {
-    const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/github`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code }),
-    });
-    const { token } = await res.json();
-    await handleAuthSuccess(token);
+    setGithubStatus('loading');
+    try{
+      const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/github`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      if (!res.ok) throw new Error(`Backend rejected token: ${res.status}`);
+      const { token } = await res.json();
+      await handleAuthSuccess(token);
+      setGithubStatus('idle');
+    } catch (e) {
+      console.error(e);
+      setGithubStatus('error');
+    }
   });
 
   return (
@@ -53,19 +62,22 @@ export default function App() {
       {screen === 'choice' && (
         <>
           <Button
-            title={googleStatus === 'loading' ? 'Вход...' : 'Войти через Google'}
+            title={googleStatus === 'loading' ? 'Login in...' : 'Login using Google'}
             disabled={!ready || googleStatus === 'loading'}
             onPress={() => promptAsync().catch(() => setGoogleStatus('error'))}
           />
           {googleStatus === 'error' && (
-            <Text style={styles.error}>Не удалось войти, попробуйте снова</Text>
+            <Text style={styles.error}>Can't login using google, try again</Text>
           )}
           <Button
-            title="Войти через GitHub"
+            title={googleStatus === 'loading' ? 'Login in...' : 'Login using GitHub'}
             disabled={!githubReady}
             onPress={() => githubPrompt()}
           />
-          <Button title="Создать аккаунт" onPress={() => setScreen('register')} />
+          {githubStatus === 'error' && (
+            <Text style={styles.error}>Can't login using github, try again</Text>
+          )}
+          <Button title="Create account" onPress={() => setScreen('register')} />
         </>
       )}
 
