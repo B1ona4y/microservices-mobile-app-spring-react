@@ -55,9 +55,19 @@ export default function App() {
     }
   });
 
+  const handleLogout = async () => {
+    await SecureStore.deleteItemAsync('auth_token');
+    setScreen('choice');
+  };
+
   return (
     <View style={styles.container}>
-      {screen === 'loggedIn' && <Text>Вы вошли</Text>}
+      {screen === 'loggedIn' && (
+        <>
+        <Text>Вы вошли</Text>
+        <Button title='Logout' onPress={handleLogout}/>
+        </>
+      )}
 
       {screen === 'choice' && (
         <>

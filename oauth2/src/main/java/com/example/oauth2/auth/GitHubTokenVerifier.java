@@ -1,5 +1,7 @@
 package com.example.oauth2.auth;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Component
 public class GitHubTokenVerifier {
     
-    private final RestClient restClient = RestClient.create("https://api.github.com");
+    private final RestClient apiClient = RestClient.create("https://api.github.com");
     private final RestClient oauthClient = RestClient.create("https://github.com/login/oauth");
 
     private final String clientId;
@@ -26,7 +28,7 @@ public class GitHubTokenVerifier {
 
     public GitHubUser verify(String code) {
         String accessToken = exchangeCodeForAccessToken(code);
-        GitHubUserResponse response = restClient.get()
+        GitHubUserResponse response = apiClient.get()
                                     .uri("/user")
                                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                                     .retrieve()
@@ -34,9 +36,27 @@ public class GitHubTokenVerifier {
         if (response == null){
             throw new IllegalArgumentException("Invalid GitHub token");
         }
-        String email = response.email() != null ? response.email() : response.login() + "@users.noreply.github.com";
+        String email = response.email() != null ? response.email() : fetchPrimaryEmail(accessToken);
 		String name = response.name() != null ? response.name() : response.login();
 		return new GitHubUser(email, name);
+    }
+    
+    @SuppressWarnings("null")
+    private String fetchPrimaryEmail(String accessToken) {
+        List<GitHubEmail> emails = apiClient.get()
+                .uri("/user/emails")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .body(new org.springframework.core.ParameterizedTypeReference<List<GitHubEmail>>() {});
+        if (emails == null) {
+            return null;
+        }
+        return emails.stream()
+                .filter(GitHubEmail::primary)
+                .filter(GitHubEmail::verified)
+                .map(GitHubEmail::email)
+                .findFirst()
+                .orElse(null);
     }
 
     private String exchangeCodeForAccessToken(String code) {
@@ -68,4 +88,6 @@ public class GitHubTokenVerifier {
 	public record GitHubUser(String email, String name) {
 	}
 
+    private record GitHubEmail(String email, boolean primary, boolean verified) {
+    }
 }
