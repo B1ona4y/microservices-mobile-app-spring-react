@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.oauth2.auth.AuthController.AuthResponse;
 import com.example.oauth2.user.User;
 import com.example.oauth2.user.UserService;
 
