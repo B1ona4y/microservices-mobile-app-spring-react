@@ -21,7 +21,7 @@ export function useGithubLogin(onCode: (code: string) => void) {
         if(response?.type === 'success'){
             onCode(response?.params.code);
         }
-    }, [response])
+    }, [response, onCode])
 
     return {promptAsync, ready: !!request }
 }

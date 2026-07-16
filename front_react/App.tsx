@@ -77,7 +77,7 @@ export default function App() {
             onPress={() => promptAsync().catch(() => setGoogleStatus('error'))}
           />
           {googleStatus === 'error' && (
-            <Text style={styles.error}>Can't login using google, try again</Text>
+            <Text style={styles.error}>Can&apos;t login using google, try again</Text>
           )}
           <Button
             title={googleStatus === 'loading' ? 'Login in...' : 'Login using GitHub'}
@@ -85,7 +85,7 @@ export default function App() {
             onPress={() => githubPrompt()}
           />
           {githubStatus === 'error' && (
-            <Text style={styles.error}>Can't login using github, try again</Text>
+            <Text style={styles.error}>Can&apos;t login using github, try again</Text>
           )}
           <Button title="Create account" onPress={() => setScreen('register')} />
         </>
