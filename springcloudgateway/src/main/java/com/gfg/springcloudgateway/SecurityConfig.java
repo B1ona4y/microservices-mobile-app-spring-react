@@ -1,4 +1,4 @@
-package com.example.oauth2.auth;
+package com.gfg.springcloudgateway;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -42,3 +42,4 @@ public class SecurityConfig {
 		return NimbusJwtDecoder.withPublicKey(publicKey).build();
 	}
 }
+
