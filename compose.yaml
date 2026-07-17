@@ -21,7 +21,8 @@ services:
       db:
         condition: service_healthy
     environment:
-      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      APP_JWT_PUBLIC_KEY: ${APP_JWT_PUBLIC_KEY}
+      APP_JWT_PRIVATE_KEY: ${APP_JWT_PRIVATE_KEY}
       APP_JWT_ISSUER: ${APP_JWT_ISSUER:-oauth2-demo}
       APP_JWT_EXPIRY_SECONDS: ${APP_JWT_EXPIRY_SECONDS:-3600}
       APP_GOOGLE_CLIENT_ID: ${APP_GOOGLE_CLIENT_ID}

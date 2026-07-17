@@ -1,6 +1,7 @@
 app:
   jwt:
-    secret:
+    private-key:
+    public-key:
     issuer: oauth2-demo
     expiry-seconds: 3600
   google:
