@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
 type Props = {
-  onSuccess: (token: string) => void;
+  onSuccess: (accessToken: string, refreshToken: string) => void;
   onSwitchToLogin: () => void;
   onBack: () => void;
 };
@@ -25,8 +25,8 @@ export function RegisterForm({ onSuccess, onSwitchToLogin, onBack }: Props) {
       });
       if (res.status === 409) throw new Error('Такой email уже зарегистрирован');
       if (!res.ok) throw new Error(`Ошибка регистрации: ${res.status}`);
-      const { token } = await res.json();
-      onSuccess(token);
+      const { accessToken, refreshToken } = await res.json();
+      onSuccess(accessToken, refreshToken);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Не удалось зарегистрироваться');
     } finally {

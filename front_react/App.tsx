@@ -1,21 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
 import * as SecureStore from 'expo-secure-store';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { useGoogleLogin } from './auth/useGoogleLogin';
 import { RegisterForm } from './auth/RegisterForm';
 import { LoginForm } from './auth/LoginForm';
 import { useGithubLogin } from './auth/useGithubLogin';
+import { saveTokens, clearTokens, getRefresh } from './auth/tokens';
+import { restoreSession } from './auth/apiClient';
 
-type Screen = 'choice' | 'register' | 'login' | 'loggedIn';
+type Screen = 'loading' | 'choice' | 'register' | 'login' | 'loggedIn';
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('choice');
+  const [screen, setScreen] = useState<Screen>('loading');
   const [googleStatus, setGoogleStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [githubStatus, setGithubStatus] = useState<'idle' | 'loading' | 'error'>('idle');
 
-  const handleAuthSuccess = async (token: string) => {
-    await SecureStore.setItemAsync('auth_token', token);
+  useEffect(() => {
+    restoreSession().then((ok) => setScreen(ok ? 'loggedIn' : 'choice'));
+  }, []);
+
+  const handleAuthSuccess = async (accessToken: string, refreshToken: string) => {
+    await saveTokens(accessToken, refreshToken);
     setScreen('loggedIn');
   };
 
@@ -28,8 +34,8 @@ export default function App() {
         body: JSON.stringify({ token: idToken }),
       });
       if (!res.ok) throw new Error(`Backend rejected token: ${res.status}`);
-      const { token } = await res.json();
-      await handleAuthSuccess(token);
+      const { accessToken, refreshToken } = await res.json();
+      await handleAuthSuccess(accessToken, refreshToken);
       setGoogleStatus('idle');
     } catch (e) {
       console.error(e);
@@ -46,8 +52,8 @@ export default function App() {
         body: JSON.stringify({ code }),
       });
       if (!res.ok) throw new Error(`Backend rejected token: ${res.status}`);
-      const { token } = await res.json();
-      await handleAuthSuccess(token);
+      const { accessToken, refreshToken } = await res.json();
+      await handleAuthSuccess(accessToken, refreshToken);
       setGithubStatus('idle');
     } catch (e) {
       console.error(e);
@@ -56,15 +62,24 @@ export default function App() {
   });
 
   const handleLogout = async () => {
-    await SecureStore.deleteItemAsync('auth_token');
+    const refresh = await getRefresh();
+    if (refresh) {
+      await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: refresh }),
+      }).catch(() => {});
+    }
+    await clearTokens();
     setScreen('choice');
   };
 
   return (
     <View style={styles.container}>
+      {screen === 'loading' && <Text>Loading...</Text>}
       {screen === 'loggedIn' && (
         <>
-        <Text>Вы вошли</Text>
+        <Text>You loggedIn</Text>
         <Button title='Logout' onPress={handleLogout}/>
         </>
       )}
