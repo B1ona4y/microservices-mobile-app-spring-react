@@ -66,6 +66,21 @@ public class AuthController {
 				.orElseGet(() -> ResponseEntity.status(401).build());
 	}
 
+	@PostMapping("/refresh")
+	public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request){
+		try {
+			RefreshToken old = refreshTokenService.rotate(request.refreshToken());
+			User user = userService.findById(old.getUserId())
+				.orElseThrow(() -> new InvalidRefreshTokenException("user not found"));
+
+			String newAccess = jwtService.issueToken(user.getEmail(), user.getName());
+			String newRefresh = refreshTokenService.issueToken(old.getUserId(), old.getFamilyId());
+			return ResponseEntity.ok(new AuthResponse(newAccess, newRefresh));
+		} catch (TokenReuseDetectedException | InvalidRefreshTokenException e) {
+			return ResponseEntity.status(401).build();
+		}
+	}
+
 	@PostMapping("/google")
 	public ResponseEntity<AuthResponse> google(@RequestBody ProviderTokenRequest request) {
 		try {
