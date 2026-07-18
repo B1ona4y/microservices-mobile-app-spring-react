@@ -65,6 +65,11 @@ public class RefreshTokenService {
         repo.save(token);
         return token;
     }
+
+    public void revoke(String presentedRawToken) {
+        repo.findByTokenHash(sha256(presentedRawToken))
+            .ifPresent(token -> revokeFamily(token.getFamilyId()));
+    }
     
     public void revokeFamily(String familyId) {
         List<RefreshToken> family = repo.findByFamilyId(familyId);
