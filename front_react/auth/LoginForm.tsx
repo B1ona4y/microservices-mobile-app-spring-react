@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
 type Props = {
-  onSuccess: (token: string) => void;
+  onSuccess: (accessToken: string, refreshToken: string) => void;
   onSwitchToRegister: () => void;
   onBack: () => void;
 };
@@ -24,8 +24,8 @@ export function LoginForm({ onSuccess, onSwitchToRegister, onBack }: Props) {
       });
       if (res.status === 401) throw new Error('Неверный email или пароль');
       if (!res.ok) throw new Error(`Ошибка входа: ${res.status}`);
-      const { token } = await res.json();
-      onSuccess(token);
+      const { accessToken, refreshToken } = await res.json();
+      onSuccess(accessToken, refreshToken);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Не удалось войти');
     } finally {
