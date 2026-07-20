@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/B1ona4y/login_auth2_component/compare/v1.0.0...v1.1.0) (2026-07-17)
+
+
+### Features
+
+* compose update ([609dba7](https://github.com/B1ona4y/login_auth2_component/commit/609dba714518e16bbd0af1d6bdaa10aaf049b111))
+* gateway between user and services ([c6983db](https://github.com/B1ona4y/login_auth2_component/commit/c6983db360e81c03014306eae9c8c3c113b8f947))
+* gateway spring package init ([a5b2070](https://github.com/B1ona4y/login_auth2_component/commit/a5b2070b854365f63b6dcc253a03dc4085dadb6d))
+
 ## 1.0.0 (2026-07-16)
 
 
