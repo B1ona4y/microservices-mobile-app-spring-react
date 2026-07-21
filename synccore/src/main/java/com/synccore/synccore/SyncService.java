@@ -26,7 +26,6 @@ public abstract class SyncService<T extends Syncable> {
         for (T incoming : request.changes()) {
             List<String> errors = validate(incoming);
             if (!errors.isEmpty()) {
-                // кривая запись не должна ронять весь батч — пропускаем и сообщаем клиенту
                 rejected.add(new RejectedRecord(incoming.getId(), errors));
                 continue;
             }
