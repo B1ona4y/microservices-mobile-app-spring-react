@@ -1,5 +1,6 @@
 package com.notebookServices.notebook.notebook.dto;
 
-public record NotebookRequest() {
-    
-}
+import java.util.UUID;
+
+public record NotebookRequest(
+    UUID id, String name, long version, boolean deleted) { }
