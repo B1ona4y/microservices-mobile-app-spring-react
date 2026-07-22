@@ -21,7 +21,7 @@ jobs:
         run: cd oauth2 && ./mvnw -B verify
 
       - name: Checkstyle notebook
-        run: cd notebook && ./mvnw checkstyle:style
+        run: cd notebook && ./mvnw checkstyle:check
       - name: Build notebook
         run: cd notebook && ./mvnw verify
 
