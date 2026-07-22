@@ -6,6 +6,7 @@ import com.notebookServices.notebook.SyncableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "pages")
+@Table(name = "pages", indexes = {
+    @Index(name = "idx_pages_owner_updated", columnList = "owner, updated_at")
+})
 @Getter
 @Setter
 @SuperBuilder

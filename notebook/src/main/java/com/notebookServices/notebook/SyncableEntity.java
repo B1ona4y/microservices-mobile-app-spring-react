@@ -24,8 +24,8 @@ public abstract class SyncableEntity implements Syncable {
     @Id private UUID id;
     @Column(nullable = false)
     private String owner;
-    @Column(nullable = false)
     private long version;
     private boolean deleted;
+    @Column(nullable = false)
     private Instant updatedAt;
 }
