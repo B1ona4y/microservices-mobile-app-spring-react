@@ -1,0 +1,11 @@
+# Контекст сборки для сервисов с корневым context: .
+# Без этого в контекст поедет весь монорепо, включая node_modules и .git.
+#
+# ВНИМАНИЕ: notebook/src/main/resources/application.yaml здесь НЕ исключён —
+# он не содержит секретов (датасорс приходит из env), но несёт JPA-конфиг.
+**/target/
+**/.idea/
+**/*.iml
+**/.vscode/
+.git/
+front_react/
