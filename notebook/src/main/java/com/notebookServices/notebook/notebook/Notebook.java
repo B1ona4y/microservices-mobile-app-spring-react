@@ -4,6 +4,7 @@ import com.notebookServices.notebook.SyncableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -15,7 +16,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "notebooks")
+@Table(name = "notebooks", indexes = {
+    @Index(name = "idx_notebooks_owner_updated", columnList = "owner, updated_at")
+})
 @Getter
 @Setter
 @SuperBuilder

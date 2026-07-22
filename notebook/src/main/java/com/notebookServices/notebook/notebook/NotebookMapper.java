@@ -9,11 +9,12 @@ import org.mapstruct.ReportingPolicy;
 import com.notebookServices.notebook.notebook.dto.NotebookRequest;
 import com.notebookServices.notebook.notebook.dto.NotebookResponse;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface NotebookMapper {
+
     NotebookResponse toResponse(Notebook notebook);
 
-    List<NotebookResponse> tResponseList(List<Notebook> notebooks);
+    List<NotebookResponse> toResponseList(List<Notebook> notebooks);
 
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
