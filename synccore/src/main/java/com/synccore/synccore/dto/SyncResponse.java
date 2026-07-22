@@ -7,5 +7,6 @@ import com.synccore.synccore.Syncable;
 
 public record SyncResponse<T extends Syncable>(
     List<T> changes,
-    Instant newSince
+    Instant newSince,
+    List<RejectedRecord> rejected
 ) {}

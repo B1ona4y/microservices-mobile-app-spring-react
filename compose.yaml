@@ -34,6 +34,37 @@ services:
 
     restart: unless-stopped
 
+  notebook-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${NOTEBOOK_POSTGRES_DB:-notebookdb}
+      POSTGRES_USER: ${NOTEBOOK_POSTGRES_USER:-notebookuser}
+      POSTGRES_PASSWORD: ${NOTEBOOK_POSTGRES_PASSWORD}
+    volumes:
+      - notebook_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${NOTEBOOK_POSTGRES_USER:-notebookuser}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  notebook:
+    build:
+      context: .
+      dockerfile: notebook/Dockerfile
+    depends_on:
+      notebook-db:
+        condition: service_healthy
+    environment:
+      APP_JWT_PUBLIC_KEY: ${APP_JWT_PUBLIC_KEY}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notebook-db:5432/${NOTEBOOK_POSTGRES_DB:-notebookdb}
+      SPRING_DATASOURCE_USERNAME: ${NOTEBOOK_POSTGRES_USER:-notebookuser}
+      SPRING_DATASOURCE_PASSWORD: ${NOTEBOOK_POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_OPEN_IN_VIEW: "false"
+
+    restart: unless-stopped
+
   springcloudgateway:
     build:
       context: ./springcloudgateway
@@ -41,6 +72,7 @@ services:
       - "8080:8080"
     depends_on:
       - oauth2
+      - notebook
     environment:
       APP_JWT_PUBLIC_KEY: ${APP_JWT_PUBLIC_KEY}
 
@@ -60,4 +92,5 @@ services:
 
 volumes:
   db_data:
+  notebook_db_data:
   pgadmin-data:
