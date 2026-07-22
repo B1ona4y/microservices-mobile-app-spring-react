@@ -2,7 +2,7 @@ name: CI Backend
 on:
   pull_request:
     branches: [main]
-    paths: ['oauth2/**']
+    paths: ['oauth2/**', 'notebook/**', 'synccore/**', 'springcloudgateway/**']
 
 jobs:
   lint-and-build:
@@ -11,7 +11,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { java-version: '26', distribution: 'temurin' }
-      - name: Checkstyle
-        run: cd oauth2 && ./mvnw checkstyle:check
-      - name: Build & test
-        run: cd oauth2 && ./mvnw verify
+
+      - name: Build synccore
+        run: cd synccore && ./mvnw -B clean install -DskipTests
+
+      - name: Checkstyle oauth2
+        run: cd oauth2 && ./mvnw -B checkstyle:check
+      - name: Build oauth2
+        run: cd oauth2 && ./mvnw -B verify
+
+      - name: Checkstyle notebook
+        run: cd notebook && ./mvnw checkstyle:style
+      - name: Build notebook
+        run: cd notebook && ./mvnw verify
+
+      - name: Build gateway
+        run: cd springcloudgateway && ./mvnw -B verify
