@@ -2,8 +2,12 @@ package com.synccore.synccore;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.data.domain.PageRequest;
 
 import com.synccore.synccore.dto.RejectedRecord;
 import com.synccore.synccore.dto.SyncRequest;
@@ -19,8 +23,13 @@ public abstract class SyncService<T extends Syncable> {
         return List.of();
     }
 
+    protected int pullLimit() {
+        return 500;
+    }
+
     @Transactional
     public SyncResponse<T> sync(SyncRequest<T> request, String owner) {
+        List<T> accepted = new ArrayList<>();
         List<RejectedRecord> rejected = new ArrayList<>();
 
         for (T incoming : request.changes()) {
@@ -29,35 +38,54 @@ public abstract class SyncService<T extends Syncable> {
                 rejected.add(new RejectedRecord(incoming.getId(), errors));
                 continue;
             }
-            applyChange(incoming, owner);
+            accepted.add(incoming);
+        }
+        applyChange(accepted, owner);
+
+        int limit = pullLimit();
+        List<T> serverChanges = repository().findByOwnerAndUpdatedAtAfterOrderByUpdatedAtAsc(
+                owner, request.since(), PageRequest.of(0, limit));
+
+        boolean hasMore = serverChanges.size() == limit;
+        Instant newSince = hasMore
+                ? serverChanges.get(serverChanges.size() - 1).getUpdatedAt()
+                : Instant.now();
+
+        return new SyncResponse<>(serverChanges, newSince, hasMore, rejected);
+    }
+
+    private void applyChange(List<T> incoming, String owner) {
+        if (incoming.isEmpty()) {
+            return;
+        }
+
+        List<UUID> ids = incoming.stream().map(Syncable::getId).toList();
+
+        Map<UUID, T> existing = new HashMap<>();
+        for (T found : repository().findAllById(ids)) {
+            existing.put(found.getId(), found);
         }
 
         Instant now = Instant.now();
-        List<T> serverChanges = repository().findByOwnerAndUpdatedAtAfter(owner, request.since());
+        List<T> toSave = new ArrayList<>();
 
-        return new SyncResponse<>(serverChanges, now, rejected);
-    }
+        for (T candidate : incoming) {
+            T current = existing.get(candidate.getId());
 
-    private void applyChange(T incoming, String owner) {
-        incoming.setOwner(owner);
+            if (current != null) {
+                if (!owner.equals(current.getOwner())) {
+                    continue;
+                }
+                if (candidate.getVersion() <= current.getVersion()) {
+                    continue;
+                }
+            }
 
-        Optional<T> existing = repository().findById(incoming.getId());
-
-        if (existing.isEmpty()) {
-            incoming.setUpdatedAt(Instant.now());
-            repository().save(incoming);
-            return;
+            candidate.setOwner(owner);
+            candidate.setUpdatedAt(now);
+            toSave.add(candidate);
         }
 
-        T current = existing.get();
-
-        if (!current.getOwner().equals(owner)) {
-            return;
-        }
-
-        if (incoming.getVersion() > current.getVersion()) {
-            incoming.setUpdatedAt(Instant.now());
-            repository().save(incoming);
-        }
+        repository().saveAll(toSave);
     }
 }
