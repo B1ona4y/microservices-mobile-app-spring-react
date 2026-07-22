@@ -14,3 +14,7 @@ spring:
               uri: http://oauth2:8080
               predicates:
                 - Path=/users/**
+            - id: notebook-service
+              uri: http://notebook:8080
+              predicates:
+                - Path=/sync/**
