@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.2.0](https://github.com/B1ona4y/login_auth2_component/compare/v1.1.0...v1.2.0) (2026-07-22)
+
+
+### Features
+
+* batching and pagination ([d07af95](https://github.com/B1ona4y/login_auth2_component/commit/d07af956ce2026faaedd14af2aafacbed97e5ed4))
+* cicd up to date ([335d865](https://github.com/B1ona4y/login_auth2_component/commit/335d8652c5f829da9ddf6867e007add73f3e45c2))
+* cicd up to date ([25b36de](https://github.com/B1ona4y/login_auth2_component/commit/25b36de22aac52d64c9efed12677f15c56671480))
+* dtos for sync module ([ad73493](https://github.com/B1ona4y/login_auth2_component/commit/ad73493ae8fc4a7e1f6379df68e1cf55aaa777ed))
+* Entities ([032a5d8](https://github.com/B1ona4y/login_auth2_component/commit/032a5d8790791b8eac7b790fb7d23449773be8da))
+* init  for SyncController ([b628468](https://github.com/B1ona4y/login_auth2_component/commit/b6284681380bfad7321c0e6a25af977c79b727f3))
+* notebook dto ([599ea7e](https://github.com/B1ona4y/login_auth2_component/commit/599ea7e32dc5470955ae19ef3a1ecc92eb3e5d4b))
+* notebook mapper repo and service ([ae1beb8](https://github.com/B1ona4y/login_auth2_component/commit/ae1beb8553a41975eac3f5c94b64dc874fd99f9e))
+* notebook security config for jwt ([eafe076](https://github.com/B1ona4y/login_auth2_component/commit/eafe076513af81af1f62befaf1cce70f9c8c7ead))
+* notebook stuff ([62abe94](https://github.com/B1ona4y/login_auth2_component/commit/62abe945cc0304f8ca695d72200fe11d2b81d1ec))
+* notebook stuff ([b93f54f](https://github.com/B1ona4y/login_auth2_component/commit/b93f54f1f43ad7c37b386ace9aeb41ac623f0ece))
+* page dto and mapper ([2aa7394](https://github.com/B1ona4y/login_auth2_component/commit/2aa7394dd33a8da919de996439972a896689c51f))
+* page stuff ([b79f513](https://github.com/B1ona4y/login_auth2_component/commit/b79f51391acb5e3efcb3a169552b208d5d1d2ac3))
+* sync data ([1b908c2](https://github.com/B1ona4y/login_auth2_component/commit/1b908c2299c2ec2bebb652ec5778c8aafc4e9c7f))
+* sync structure ([3e00a79](https://github.com/B1ona4y/login_auth2_component/commit/3e00a79975e6827c853bc34265e5c4b18ff9d723))
+* validation for fields in sync ([e86412b](https://github.com/B1ona4y/login_auth2_component/commit/e86412be6c5e0320a58f629233aee6e1d74cba76))
+
+
+### Bug Fixes
+
+* annotation fixes ([64287c6](https://github.com/B1ona4y/login_auth2_component/commit/64287c6132cec0dc282cfdab71502e733b77e874))
+* fix stuff ([484b1e9](https://github.com/B1ona4y/login_auth2_component/commit/484b1e921747471eab34eae2ee5ed2a3f70860fa))
+* nullable false on updateAt + indexation for pages ([5f9b071](https://github.com/B1ona4y/login_auth2_component/commit/5f9b071085512f0413e694cf2c96ee8808720596))
+
 ## [1.1.0](https://github.com/B1ona4y/login_auth2_component/compare/v1.0.0...v1.1.0) (2026-07-17)
 
 
