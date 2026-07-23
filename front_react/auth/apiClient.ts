@@ -1,5 +1,8 @@
 import { getAccess, getRefresh, saveTokens, clearTokens } from './tokens';
 
+export class SessionExpiredError extends Error {}
+export class NetworkError extends Error {}
+
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 //single-flight
@@ -7,16 +10,21 @@ let refreshPromise: Promise<string> | null = null;
 
 async function doRefresh(): Promise<string> {
     const refresh = await getRefresh();
-    if(!refresh) throw new Error('no refresh token');
+    if(!refresh) throw new SessionExpiredError('no refresh token');
 
-    const res = await fetch(`${API_URL}/auth/refresh`, {
+    let res: Response;
+    try {
+        res = await fetch(`${API_URL}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken: refresh }),
     });
+    } catch {
+        throw new NetworkError('offline');
+    }
     if (!res.ok) {
         await clearTokens();
-        throw new Error('session expired');
+        if(!refresh) throw new SessionExpiredError('refresh rejected');
     }
     const { accessToken, refreshToken } = await res.json();
     await saveTokens(accessToken, refreshToken);
@@ -32,11 +40,13 @@ function refreshAccess(): Promise<string> {
 
 export async function restoreSession(): Promise<boolean> {
     const refresh = await getRefresh();
+    if (!refresh) return false;
+
     try {
         await refreshAccess();
         return true;
-    } catch {
-        return false;
+    } catch (e) {
+        return e instanceof NetworkError;
     }
 }
 
