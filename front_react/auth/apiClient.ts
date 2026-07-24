@@ -24,7 +24,7 @@ async function doRefresh(): Promise<string> {
     }
     if (!res.ok) {
         await clearTokens();
-        if(!refresh) throw new SessionExpiredError('refresh rejected');
+        throw new SessionExpiredError('refresh rejected');
     }
     const { accessToken, refreshToken } = await res.json();
     await saveTokens(accessToken, refreshToken);
@@ -65,4 +65,8 @@ export async function apiFetch(path: string, init: RequestInit = {}): Promise<Re
         res = await fetch(`${API_URL}${path}`, withAuth(fresh));
     }
     return res;
+}
+
+export async function hasSession(): Promise<boolean> {
+    return !!(await getRefresh());
 }
