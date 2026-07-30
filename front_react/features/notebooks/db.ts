@@ -106,7 +106,7 @@ export async function setSince(db: SQLiteDatabase, entity: SyncEntity, iso: stri
     );
 }   
 
-export async function NotebookPayload(row: Notebook) {
+export function NotebookPayload(row: Notebook) {
     return {
         id: row.id,
         name: row.name,
@@ -115,7 +115,7 @@ export async function NotebookPayload(row: Notebook) {
     };
 }
 
-export async function PagePayload(row: Page) {
+export function PagePayload(row: Page) {
     return {
         id: row.id,
         notebookId: row.notebook_id,
@@ -125,7 +125,7 @@ export async function PagePayload(row: Page) {
     };
 }
 
-async function upsertNotebookFromServer(db: SQLiteDatabase, n: Notebook) {
+export async function upsertNotebookFromServer(db: SQLiteDatabase, n: Notebook) {
     await db.runAsync(
         `INSERT INTO notebooks (id, name, version, deleted, updated_at, dirty)
          VALUES (?, ?, ?, ?, ?, 0)
@@ -140,7 +140,7 @@ async function upsertNotebookFromServer(db: SQLiteDatabase, n: Notebook) {
 }
 
 
-async function upsertPageFromServer(db: SQLiteDatabase, p: Page) {
+export async function upsertPageFromServer(db: SQLiteDatabase, p: Page) {
     await db.runAsync(
         `INSERT INTO pages (id, notebook_id, content, version, deleted, updated_at, dirty)
          VALUES (?, ?, ?, ?, ?, ?, 0)
@@ -155,7 +155,7 @@ async function upsertPageFromServer(db: SQLiteDatabase, p: Page) {
     );
 }
 
-async function clearDirty(db: SQLiteDatabase, table: 'notebooks'|'pages', ids: string[]) {
+export async function clearDirty(db: SQLiteDatabase, table: 'notebooks'|'pages', ids: string[]) {
     if (ids.length === 0) return;
     const placeholders = ids.map(() => '?').join(',');
     await db.runAsync(`UPDATE ${table} SET dirty = 0 WHERE id IN (${placeholders})`, ids);
