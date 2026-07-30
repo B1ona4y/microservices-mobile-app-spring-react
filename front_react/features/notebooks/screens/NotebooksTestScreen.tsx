@@ -3,7 +3,8 @@ import {
     ActivityIndicator, Button, FlatList, Pressable,
     StyleSheet, Text, TextInput, View,
 } from 'react-native';
-import { useNotebooks, usePages } from '../hooks';
+import { useNotebooks, usePages, useSync } from '../hooks';
+import { runSync } from '../sync';
 
 export function NotebooksTestScreen({ onBack }: { onBack: () => void }) {
     const [openId, setOpenId] = useState<string | null>(null);
@@ -17,15 +18,16 @@ export function NotebooksTestScreen({ onBack }: { onBack: () => void }) {
 function NotebookListView({ onOpen, onBack }: { onOpen: (id: string) => void; onBack: () => void }) {
     const { notebooks, loading, create, remove } = useNotebooks();
     const [name, setName] = useState('');
-    const [error, setError] = useState<string | null>(null);
+    const [createError, setCreateError] = useState<string | null>(null);
+    const { syncing, error: syncError, sync } = useSync();
 
     const add = async () => {
         try {
             await create(name);
             setName('');
-            setError(null);
+            setCreateError(null);
         } catch (e) {
-            setError(e instanceof Error ? e.message : 'Ошибка');
+            setCreateError(e instanceof Error ? e.message : 'Ошибка');
         }
     };
 
@@ -46,8 +48,9 @@ function NotebookListView({ onOpen, onBack }: { onOpen: (id: string) => void; on
                     onChangeText={setName}
                 />
                 <Button title="Создать" onPress={add} disabled={!name.trim()} />
+                <Button title="Sync" onPress={sync} disabled={!name.trim()} />
             </View>
-            {error && <Text style={styles.error}>{error}</Text>}
+            {createError && <Text style={styles.error}>{createError}</Text>}
 
             <FlatList
                 style={styles.list}
