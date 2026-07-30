@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSQLiteContext } from 'expo-sqlite';
 import * as db from './db';
 import { Notebook, Page } from './types';
+import { runSync } from './sync';
 
 export function useNotebooks() {
     const database = useSQLiteContext();
@@ -66,4 +67,24 @@ export function usePages(notebookId: string) {
     }, [database, refresh]);
 
     return { pages, loading, create, updateContent, remove };
+}
+
+export function useSync(){
+    const database = useSQLiteContext();
+    const [syncing, setSyncing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const sync = useCallback(async () => {
+        setSyncing(true);
+        setError(null);
+        try {
+            await runSync(database);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'sync faild');
+        } finally {
+            setSyncing(false);
+        }
+    }, [database]);
+
+    return {syncing, error, sync};
 }
