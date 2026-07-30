@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.3.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.2.0...v1.3.0) (2026-07-30)
+
+
+### Features
+
+* button for sync ([4eb02b2](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/4eb02b2e188a803101149c6ad496f1cd75cfdc07))
+* crud for notebooks and pages ([aa3f2d9](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/aa3f2d9e12455821c89258048c9f08da44f7de95))
+* database schema ([2e23913](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/2e239134bd7c26822a55cde8e41bb63e58173fa4))
+* function for: getting dirty lines from db,  formating rows into readable payloads ([19a3569](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/19a35697b7390695a45b88a2d3c4b989593b210a))
+* hooks ([fc7d9a6](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/fc7d9a6abcea6e90da107d36eeda5087173d161a))
+* packages for sqlite ([21d8440](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/21d844082f3aa23c2db614005eb68549dc06dfb0))
+* sync function ([ea1a35f](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/ea1a35f23f5a54c4c5695c85db9293443b854976))
+* sync hook ([1f0c495](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/1f0c49509bf967dc665ad432f3c6d946fcc37a51))
+* types ([a0b271f](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/a0b271f4f1692b503e04097b1203c2d0e54764b1))
+* update for offline mode ([d27d095](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/d27d09546720c5fcb0751254057692447de7c08a))
+* validation for names ([e05e32d](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/e05e32d2e703f0ca49f30ca37fa6bfe5641db069))
+
+
+### Bug Fixes
+
+* payloads func should not be async ([ea77f48](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/ea77f48ff50a3dc534f298f25a0628de308bb8f8))
+
 ## [1.2.0](https://github.com/B1ona4y/login_auth2_component/compare/v1.1.0...v1.2.0) (2026-07-22)
 
 
