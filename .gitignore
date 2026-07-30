@@ -53,3 +53,4 @@ target/
 
 # env files
 .env
+CLAUDE.md
