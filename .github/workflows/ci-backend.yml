@@ -2,7 +2,7 @@ name: CI Backend
 on:
   pull_request:
     branches: [main]
-    paths: ['oauth2/**', 'notebook/**', 'synccore/**', 'springcloudgateway/**']
+    paths: ['oauth2/**', 'notebook/**', 'synccore/**', 'springcloudgateway/**', 'profile/**']
 
 jobs:
   lint-and-build:
@@ -24,6 +24,11 @@ jobs:
         run: cd notebook && ./mvnw checkstyle:check
       - name: Build notebook
         run: cd notebook && ./mvnw verify
+
+      - name: Checkstyle profile
+        run: cd profile && ./mvnw -B checkstyle:check
+      - name: Build profile
+        run: cd profile && ./mvnw -B verify
 
       - name: Build gateway
         run: cd springcloudgateway && ./mvnw -B verify
