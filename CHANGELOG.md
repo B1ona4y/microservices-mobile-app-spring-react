@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.3.0...v1.3.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* jwt identity is now connected to user id ([0530d6b](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/0530d6be1526eabdd1f306d5bf257c0d65f268b1))
+* jwt identity is now connected to user id ([5e01e34](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/5e01e343e1e481caf31ca1242eb2a533863ec762))
+
 ## [1.3.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.2.0...v1.3.0) (2026-07-30)
 
 
