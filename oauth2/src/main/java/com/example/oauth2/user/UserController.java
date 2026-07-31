@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal Jwt jwt) {
-        return userService.findByEmail(jwt.getSubject())
+        return userService.findById(Long.valueOf(jwt.getSubject()))
                 .map(userMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

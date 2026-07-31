@@ -42,11 +42,11 @@ public class JwtService {
         this.expirySeconds = expirySeconds;
     }
 
-    public String issueToken(String subjectEmail, String name) {
+    public String issueToken(String subjectId, String name) {
         try {
             Instant now = Instant.now();
             JWTClaimsSet claim = new JWTClaimsSet.Builder()
-                .subject(subjectEmail)
+                .subject(subjectId)
                 .issuer(issuer)
                 .claim("name", name)
                 .issueTime(Date.from(now))

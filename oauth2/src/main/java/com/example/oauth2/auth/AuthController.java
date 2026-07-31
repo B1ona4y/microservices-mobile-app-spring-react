@@ -51,7 +51,7 @@ public class AuthController {
 	public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
 		return userService.register(request.email(), request.name(), request.password())
 				.map(user -> ResponseEntity.ok(new AuthResponse(
-					jwtService.issueToken(user.getEmail(), user.getName()),
+					jwtService.issueToken(String.valueOf(user.getId()), user.getName()),
 					refreshTokenService.issueNewFamily(user.getId()))))
 				.orElseGet(() -> ResponseEntity.status(409).build());
 	}
@@ -61,7 +61,7 @@ public class AuthController {
 		return userService.findByEmail(request.email())
 				.filter(user -> userService.checkPassword(user, request.password()))
 				.map(user -> ResponseEntity.ok(new AuthResponse(
-					jwtService.issueToken(user.getEmail(), user.getName()),
+					jwtService.issueToken(String.valueOf(user.getId()), user.getName()),
 					refreshTokenService.issueNewFamily(user.getId()))))
 				.orElseGet(() -> ResponseEntity.status(401).build());
 	}
@@ -73,7 +73,7 @@ public class AuthController {
 			User user = userService.findById(old.getUserId())
 				.orElseThrow(() -> new InvalidRefreshTokenException("user not found"));
 
-			String newAccess = jwtService.issueToken(user.getEmail(), user.getName());
+			String newAccess = jwtService.issueToken(String.valueOf(user.getId()), user.getName());
 			String newRefresh = refreshTokenService.issueToken(old.getUserId(), old.getFamilyId());
 			return ResponseEntity.ok(new AuthResponse(newAccess, newRefresh));
 		} catch (TokenReuseDetectedException | InvalidRefreshTokenException e) {
@@ -87,7 +87,7 @@ public class AuthController {
 			GoogleIdTokenVerifier.GoogleUser googleUser = googleVerifier.verify(request.token());
 			User user = userService.findOrCreateOAuthUser(googleUser.email(), googleUser.name());
 			return ResponseEntity.ok(new AuthResponse(
-				jwtService.issueToken(user.getEmail(), user.getName()),
+				jwtService.issueToken(String.valueOf(user.getId()), user.getName()),
 				refreshTokenService.issueNewFamily(user.getId())));
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(401).build();
@@ -100,7 +100,7 @@ public class AuthController {
 			GitHubTokenVerifier.GitHubUser gitHubUser = gitHubVerifier.verify(request.code());
 			User user = userService.findOrCreateOAuthUser(gitHubUser.email(), gitHubUser.name());
 			return ResponseEntity.ok(new AuthResponse(
-				jwtService.issueToken(user.getEmail(), user.getName()),
+				jwtService.issueToken(String.valueOf(user.getId()), user.getName()),
 				refreshTokenService.issueNewFamily(user.getId())));
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(401).build();
