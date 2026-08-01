@@ -1,6 +1,7 @@
 package com.service.profile.userProfile;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,5 +17,5 @@ public interface UserProfileMapper {
     List<UserProfileToResponse> toResponseList(List<UserProfile> userProfiles);
 
     @Mapping(target = "updatedAt", ignore = true)
-    UserProfile toEntity(UserProfileToRequest request);
+    UserProfile toEntity(UserProfileToRequest request, UUID id);
 }
