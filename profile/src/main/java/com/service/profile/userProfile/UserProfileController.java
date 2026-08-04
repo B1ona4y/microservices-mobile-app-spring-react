@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.service.profile.userProfile.dto.UpsertResult;
 import com.service.profile.userProfile.dto.UserProfileToRequest;
 import com.service.profile.userProfile.dto.UserProfileToResponse;
+
+import jakarta.validation.Valid;
 @RestController
 public class UserProfileController {
     private final UserProfileService userProfileService;
@@ -32,9 +35,12 @@ public class UserProfileController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<UserProfileToResponse> getOrCreateUserProfile(@RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<UserProfileToResponse> getOrCreateUserProfile(@Valid @RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
-        UserProfile saved = userProfileService.upsert(req, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userProfileMapper.toResponse(saved));
+        UpsertResult result = userProfileService.upsert(req, userId);
+        HttpStatus status = switch (result.outcome()) {
+        case CREATED -> HttpStatus.CREATED;
+        case UPDATED -> HttpStatus.OK;
+    };
+        return ResponseEntity.status(status).body(userProfileMapper.toResponse(result.profile()));    }
     }
-}
