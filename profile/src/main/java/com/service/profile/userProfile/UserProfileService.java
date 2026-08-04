@@ -1,9 +1,12 @@
 package com.service.profile.userProfile;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+
+import com.service.profile.userProfile.dto.UserProfileToRequest;
 
 @Service
 public class UserProfileService {
@@ -21,13 +24,15 @@ public class UserProfileService {
         return userProfileRepository.save(userProfile);
     }
 
-    public Optional<UserProfile> createProfile(UUID id, String name) {
-        if (userProfileRepository.findById(id).isPresent()) {
+    public Optional<UserProfile> createProfile(UserProfileToRequest req, UUID id) {
+        if (userProfileRepository.existsById(id)) {
             return Optional.empty();
         }
         UserProfile userProfile = UserProfile.builder()
                 .id(id)
-                .displayName(name)
+                .displayName(req.displayName())
+                .bio(req.bio())
+                .avatarUrl(req.avatarUrl())
                 .build();
         return Optional.of(userProfileRepository.save(userProfile));
     }
