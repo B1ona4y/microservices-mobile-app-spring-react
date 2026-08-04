@@ -1,14 +1,13 @@
 package com.service.profile.userProfile;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.MappingTarget;
 
 import com.service.profile.userProfile.dto.UserProfileToRequest;
 import com.service.profile.userProfile.dto.UserProfileToResponse;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface UserProfileMapper {
@@ -16,6 +15,5 @@ public interface UserProfileMapper {
     UserProfileToResponse toResponse(UserProfile userProfile);
     List<UserProfileToResponse> toResponseList(List<UserProfile> userProfiles);
 
-    @Mapping(target = "updatedAt", ignore = true)
-    UserProfile toEntity(UserProfileToRequest request, UUID id);
+    void update(UserProfileToRequest dto, @MappingTarget UserProfile entity);
 }

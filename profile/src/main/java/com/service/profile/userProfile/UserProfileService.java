@@ -5,39 +5,29 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.service.profile.userProfile.dto.UserProfileToRequest;
+
 
 @Service
 public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
+    private final UserProfileMapper userProfileMapper;
 
-    public UserProfileService(UserProfileRepository userProfileRepository){
+    public UserProfileService(UserProfileRepository userProfileRepository, UserProfileMapper userProfileMapper){
         this.userProfileRepository = userProfileRepository;
+        this.userProfileMapper = userProfileMapper;
     }
 
     public Optional<UserProfile> findById(UUID id) {
         return userProfileRepository.findById(id);
     }
 
-    public UserProfile save(UserProfile userProfile) {
+    @Transactional(readOnly = true)
+    public UserProfile upsert(UserProfileToRequest req, UUID id) {
+        UserProfile userProfile = userProfileRepository.findById(id).orElseGet(() -> UserProfile.builder().id(id).build());
+        userProfileMapper.update(req, userProfile);
         return userProfileRepository.save(userProfile);
-    }
-
-    public Optional<UserProfile> createIfAbsent(UserProfileToRequest req, UUID id) {
-        if (userProfileRepository.existsById(id)) {
-            return Optional.empty();
-        }
-        UserProfile userProfile = UserProfile.builder()
-                .id(id)
-                .displayName(req.displayName())
-                .bio(req.bio())
-                .avatarUrl(req.avatarUrl())
-                .build();
-        return Optional.of(userProfileRepository.save(userProfile));
-    }
-
-    public Optional<UserProfile> findByIdAndOwner(String displayName) {
-        return userProfileRepository.findByDisplayName(displayName);
     }
 }
