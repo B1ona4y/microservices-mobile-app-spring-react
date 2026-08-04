@@ -21,11 +21,12 @@ public class UserProfileService {
         this.userProfileMapper = userProfileMapper;
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserProfile> findById(UUID id) {
         return userProfileRepository.findById(id);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public UpsertResult upsert(UserProfileToRequest req, UUID id) {
         Optional<UserProfile> found = userProfileRepository.findById(id);
         UserProfile userProfile = found.orElseGet(() -> UserProfile.builder().id(id).build());
