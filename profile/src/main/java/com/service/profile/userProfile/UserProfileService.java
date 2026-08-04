@@ -24,7 +24,7 @@ public class UserProfileService {
         return userProfileRepository.save(userProfile);
     }
 
-    public Optional<UserProfile> createProfile(UserProfileToRequest req, UUID id) {
+    public Optional<UserProfile> createIfAbsent(UserProfileToRequest req, UUID id) {
         if (userProfileRepository.existsById(id)) {
             return Optional.empty();
         }
