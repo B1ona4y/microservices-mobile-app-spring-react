@@ -3,13 +3,14 @@ package com.service.profile.userProfile;
 import java.util.UUID;
 
 import java.util.Optional;
-import org.springframework.boot.security.autoconfigure.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,19 +34,10 @@ public class UserProfileController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/profile")
-    public ResponseEntity<UserProfileToResponse> createProfile(@RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfileToResponse> getOrCreateUserProfile(@RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
-
-        Optional<UserProfile> existing = userProfileService.findById(userId);
-
-        if (existing.isPresent()) {
-            return ResponseEntity.ok(userProfileMapper.toResponse(existing.get()));
-        }
-
-        UserProfile entity = userProfileMapper.toEntity(req, userId);
-        UserProfile saved = userProfileService.save(entity);
-
+        UserProfile saved = userProfileService.upsert(req, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(userProfileMapper.toResponse(saved));
     }
 }
