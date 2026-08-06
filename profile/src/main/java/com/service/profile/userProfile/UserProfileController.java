@@ -43,8 +43,8 @@ public class UserProfileController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserProfileToResponse> getOrCreateUserProfile(@Valid @RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+    public ResponseEntity<UserProfileToResponse> upsertUserProfile(@Valid @RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
+        UUID userId = currentUserId(jwt);
         UpsertResult result = userProfileService.upsert(req, userId);
         HttpStatus status = switch (result.outcome()) {
             case CREATED -> HttpStatus.CREATED;
