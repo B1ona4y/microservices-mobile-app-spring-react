@@ -1,6 +1,4 @@
-package com.service.profile.userProfile.dto;
-
-import com.service.profile.userProfile.UserProfile;
+package com.service.profile.userProfile;
 
 public record UpsertResult(UserProfile profile, Outcome outcome) {
     public enum Outcome { CREATED, UPDATED }
