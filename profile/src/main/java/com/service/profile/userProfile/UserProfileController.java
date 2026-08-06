@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,12 +29,17 @@ public class UserProfileController {
         this.userProfileMapper = userProfileMapper;
     }
 
+    private UUID currentUserId(Jwt jwt) {
+        try {
+            return UUID.fromString(jwt.getSubject());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidBearerTokenException("malformed subject");
+        }
+    }
+
     @GetMapping("/me")
-    public ResponseEntity<UserProfileToResponse> me(@AuthenticationPrincipal Jwt jwt) {
-        return userProfileService.findById(UUID.fromString(jwt.getSubject()))
-                .map(userProfileMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public UserProfileToResponse me(@AuthenticationPrincipal Jwt jwt) {
+        return userProfileMapper.toResponse(userProfileService.findById(currentUserId(jwt)));
     }
 
     @PutMapping("/me")
@@ -47,5 +53,5 @@ public class UserProfileController {
         return ResponseEntity.status(status).body(userProfileMapper.toResponse(result.profile()));
     }
 
-    
+
 }
