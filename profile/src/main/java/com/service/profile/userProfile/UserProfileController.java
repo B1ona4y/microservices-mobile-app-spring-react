@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.service.profile.userProfile.dto.UpsertResult;
@@ -17,6 +18,7 @@ import com.service.profile.userProfile.dto.UserProfileToResponse;
 
 import jakarta.validation.Valid;
 @RestController
+@RequestMapping("/api/v1/profiles")
 public class UserProfileController {
     private final UserProfileService userProfileService;
     private final UserProfileMapper userProfileMapper;
@@ -26,7 +28,7 @@ public class UserProfileController {
         this.userProfileMapper = userProfileMapper;
     }
 
-    @GetMapping("/profile/me")
+    @GetMapping("/me")
     public ResponseEntity<UserProfileToResponse> me(@AuthenticationPrincipal Jwt jwt) {
         return userProfileService.findById(UUID.fromString(jwt.getSubject()))
                 .map(userProfileMapper::toResponse)
@@ -34,13 +36,16 @@ public class UserProfileController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/profile")
+    @PutMapping("/me")
     public ResponseEntity<UserProfileToResponse> getOrCreateUserProfile(@Valid @RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         UpsertResult result = userProfileService.upsert(req, userId);
         HttpStatus status = switch (result.outcome()) {
-        case CREATED -> HttpStatus.CREATED;
-        case UPDATED -> HttpStatus.OK;
-    };
-        return ResponseEntity.status(status).body(userProfileMapper.toResponse(result.profile()));    }
+            case CREATED -> HttpStatus.CREATED;
+            case UPDATED -> HttpStatus.OK;
+        };
+        return ResponseEntity.status(status).body(userProfileMapper.toResponse(result.profile()));
     }
+
+    
+}
