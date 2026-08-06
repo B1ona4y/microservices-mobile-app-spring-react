@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.service.profile.error.ProfileNotFoundException;
 import com.service.profile.userProfile.dto.UpsertResult;
 import com.service.profile.userProfile.dto.UserProfileToRequest;
 import com.service.profile.userProfile.dto.UpsertResult.Outcome;
@@ -22,8 +23,9 @@ public class UserProfileService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserProfile> findById(UUID id) {
-        return userProfileRepository.findById(id);
+    public UserProfile findById(UUID id) {
+        return userProfileRepository.findById(id)
+            .orElseThrow(() -> new ProfileNotFoundException(id));
     }
 
     @Transactional
