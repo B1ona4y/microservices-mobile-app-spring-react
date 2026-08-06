@@ -65,6 +65,36 @@ services:
 
     restart: unless-stopped
 
+  profile-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${PROFILE_POSTGRES_DB:-profiledb}
+      POSTGRES_USER: ${PROFILE_POSTGRES_USER:-profileuser}
+      POSTGRES_PASSWORD: ${PROFILE_POSTGRES_PASSWORD}
+    volumes:
+      - profile_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PROFILE_POSTGRES_USER:-profileuser}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  profile:
+    build:
+      context: ./profile
+    depends_on:
+      profile-db:
+        condition: service_healthy
+    environment:
+      APP_JWT_PUBLIC_KEY: ${APP_JWT_PUBLIC_KEY}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://profile-db:5432/${PROFILE_POSTGRES_DB:-profiledb}
+      SPRING_DATASOURCE_USERNAME: ${PROFILE_POSTGRES_USER:-profileuser}
+      SPRING_DATASOURCE_PASSWORD: ${PROFILE_POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_OPEN_IN_VIEW: "false"
+
+    restart: unless-stopped
+
   springcloudgateway:
     build:
       context: ./springcloudgateway
@@ -73,6 +103,7 @@ services:
     depends_on:
       - oauth2
       - notebook
+      - profile
     environment:
       APP_JWT_PUBLIC_KEY: ${APP_JWT_PUBLIC_KEY}
 
@@ -108,5 +139,6 @@ services:
 volumes:
   db_data:
   notebook_db_data:
+  profile_db_data:
   pgadmin-data:
   minio_data:

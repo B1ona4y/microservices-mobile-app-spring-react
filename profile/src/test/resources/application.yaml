@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:profile;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+
+# Одноразовый публичный ключ только для тестов: сервис на старте требует
+# app.jwt.public-key, приватная половина никогда не существовала за пределами генерации.
+app:
+  jwt:
+    public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsC6kYwEeO2j53K+sWUcioLdy+/m9fCHEZ9j0q1Wki8/DjKu5COIpcYnt3rQmmfR77A5WxtTsjBsroMrMEpov3uOTQyHDgErUKrK2MBvqhGy0OPDrocRkDzlWTX8lH8Hmq8vo5S4ioko2f845w/zyrpEiKMaWezSFZbxsDiFDFqinX7DWfUdNgQyFUAb7PJdCH8SFb/OhJDWP7yWmm6hAf4WScWbKE9OZbKbLBUTNSOf+1GqyXwCDLiux/iO9KLU7dLsfp+yQtz+opUWBZ+SXaYJyB06yFlaHMN9vWKCntxeKYRiXp5Lq+BaJQiDrrEU40pdCsfMSmnWYWFuDm4HDDQIDAQAB
