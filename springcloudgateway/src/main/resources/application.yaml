@@ -18,3 +18,7 @@ spring:
               uri: http://notebook:8080
               predicates:
                 - Path=/sync/**
+            - id: profile-service
+              uri: http://profile:8080
+              predicates:
+                - Path=/api/v1/profiles/**
