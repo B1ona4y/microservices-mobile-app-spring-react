@@ -41,8 +41,10 @@ public class UserProfile {
     @Column(nullable = false)
     private String displayName;
 
+    @Column(length = 4096)
     private String bio;
 
+    @Column(length = 2048)
     private String avatarUrl;
 
     @Version
