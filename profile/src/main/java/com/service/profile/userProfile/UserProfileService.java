@@ -1,15 +1,13 @@
 package com.service.profile.userProfile;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.service.profile.error.ProfileNotFoundException;
-import com.service.profile.userProfile.dto.UpsertResult;
+import com.service.profile.userProfile.UpsertResult.Outcome;
 import com.service.profile.userProfile.dto.UserProfileToRequest;
-import com.service.profile.userProfile.dto.UpsertResult.Outcome;
 
 
 @Service
@@ -23,13 +21,13 @@ public class UserProfileService {
     }
 
     @Transactional(readOnly = true)
-    public UserProfile findById(UUID id) {
+    public UserProfile findById(String id) {
         return userProfileRepository.findById(id)
             .orElseThrow(() -> new ProfileNotFoundException(id));
     }
 
     @Transactional
-    public UpsertResult upsert(UserProfileToRequest req, UUID id) {
+    public UpsertResult upsert(UserProfileToRequest req, String id) {
         Optional<UserProfile> found = userProfileRepository.findById(id);
         UserProfile userProfile = found.orElseGet(() -> UserProfile.builder().id(id).build());
         userProfileMapper.update(req, userProfile);
