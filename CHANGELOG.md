@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.4.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.3.1...v1.4.0) (2026-08-09)
+
+
+### Features
+
+* added bio to response ([b7997d9](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/b7997d92fa9e89829f7a08abd75afb946605009b))
+* adding profiles to gateway ([e4ba3dc](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/e4ba3dcdb9db4b6c9af8649e9d97751b6ec2f39f))
+* additional error handling ([7b300d5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/7b300d5de66ada1c29e8d1948e17518fb70107d0))
+* additional service methods ([ee6292f](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/ee6292fd4454d3e9b405120a9d1e009f87ae2d31))
+* agent for writing tests ([b4c74ba](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/b4c74ba9097172b8d7d51bac9bece6263f280a72))
+* basic structure for userProfile entity ([24d8659](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/24d86597fafad1cb2f4470e76685490a357b9542))
+* better controller error handling ([ec86ef7](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/ec86ef7a1ae72ea04d42323be47141be11030d01))
+* better path structure ([65bb7c5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/65bb7c5fa6f3e0eb74d862aad681b572c538f600))
+* better service error handling ([e35c743](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/e35c7437ddd3ad6d72294b01371062b07b68ddf8))
+* changed createProfile to createIfAbsent to take user request to build userProfile if there is none ([bfb3ff2](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/bfb3ff25a5f4ea4f64dfc01889cf499adc922f46))
+* changed createProfile to createIfAbsent to take user request to build userProfile if there is none ([81254ec](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/81254eccabf957a7fdc6dc49f40a5da2dcb00100))
+* controller with /profile/me to get userProfile and /profile for get or create userProfile ([1d15fa5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/1d15fa59b5191b9390a32f541ca79661ebd5f89c))
+* correct annotations ([62e3475](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/62e3475817bd59b06ba6af8ae646ba9977f59633))
+* correct dto validation ([ebb17d5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/ebb17d5e21995e63a4503f655ec16c4c5bcb3fda))
+* created a enum for upsertresult so controller could send 200 and 201 codes. ([f1bd7fb](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/f1bd7fb3e612ffae1c250da5fccea15704835037))
+* docker compose for profile service and h2 test ([c051263](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/c051263b5a8d7abd4a7b9f547189c47225e5e642))
+* exeption for "user not found" ([3ab2652](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/3ab26527e5e1da62771f29dd3ab55f4c2ecc7def))
+* global error handaling class ([7f71fe5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/7f71fe56d212286c05f7d48b21ea6dfba52661c8))
+* minio as storage for imges of user profile pictures ([7c6945e](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/7c6945e7db6254dd7622f21ed07a5645ae5cfc6c))
+* refactor UserProfile and UserProfileService for correct upsert impl ([dc928c5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/dc928c5309c4f02b9acd555c820398c982380a53))
+* security config ([b3291a4](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/b3291a4b44aee86288fa5e66902903e8db9bcf59))
+* tests for profile service ([1a20b0d](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/1a20b0d1fa1da4edb6f631d3b0582c80fa94e8f6))
+* update and correct naming ([4582a45](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/4582a45d6726ed546a1a08e12534de2f705cabe9))
+* upsert for Put endpoint ([0278da5](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/0278da5b0d35a79c8d66721856cbcc2b25e5d08d))
+
+
+### Bug Fixes
+
+* builder not superbuilder ([ed91b1b](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/ed91b1b618ce53292e337d1857464bdebbf3b344))
+* DTO @Size vs @Column length mismatch ([dee3e28](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/dee3e286ee3896bdfda64eeeb6aa84c40f74d63e))
+* removed id and version from request dto ([9526e55](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/9526e554978e5558fb21d284716caa5d8c15ccdb))
+
 ## [1.3.1](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.3.0...v1.3.1) (2026-07-31)
 
 
