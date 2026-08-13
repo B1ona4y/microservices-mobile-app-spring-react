@@ -1,6 +1,7 @@
 package com.service.profile.userProfile;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,11 +30,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfile {
-    // Совпадает с JWT subject, который oauth2 выдаёт как строковый id пользователя.
-    // Тот же тип, что owner в notebook (SyncableEntity), — единый идентификатор владельца.
     @Id
     @Setter(AccessLevel.NONE)
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "name must not be blank")
     @Size(max = 255, message = "name must be at most 255 characters")

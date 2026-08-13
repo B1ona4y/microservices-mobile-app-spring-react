@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 class UserProfileControllerTest {
 
     private static final String BASE_PATH = "/api/v1/profiles";
-    private static final String OWNER_ID = "owner-1234";
-    private static final String OTHER_OWNER_ID = "owner-5678";
+    private static final UUID OWNER_ID = UUID.fromString("00000000-0000-0000-0000-000000001234");
+    private static final UUID OTHER_OWNER_ID = UUID.fromString("00000000-0000-0000-0000-000000005678");
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +40,7 @@ class UserProfileControllerTest {
         userProfileRepository.deleteAll();
     }
 
-    private UserProfile persistProfile(String id, String displayName, String bio, String avatarUrl) {
+    private UserProfile persistProfile(UUID id, String displayName, String bio, String avatarUrl) {
         return userProfileRepository.save(UserProfile.builder()
                 .id(id)
                 .displayName(displayName)
@@ -54,9 +55,9 @@ class UserProfileControllerTest {
     void meReturns200WithProfileWhenExists() throws Exception {
         persistProfile(OWNER_ID, "Alice", "hello there", "http://example.com/a.png");
 
-        mockMvc.perform(get(BASE_PATH + "/me").with(jwt().jwt(j -> j.subject(OWNER_ID))))
+        mockMvc.perform(get(BASE_PATH + "/me").with(jwt().jwt(j -> j.subject(OWNER_ID.toString()))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(OWNER_ID))
+                .andExpect(jsonPath("$.id").value(OWNER_ID.toString()))
                 .andExpect(jsonPath("$.displayName").value("Alice"))
                 .andExpect(jsonPath("$.bio").value("hello there"))
                 .andExpect(jsonPath("$.avatarUrl").value("http://example.com/a.png"))
@@ -66,7 +67,7 @@ class UserProfileControllerTest {
 
     @Test
     void meReturns404WhenProfileDoesNotExist() throws Exception {
-        mockMvc.perform(get(BASE_PATH + "/me").with(jwt().jwt(j -> j.subject(OWNER_ID))))
+        mockMvc.perform(get(BASE_PATH + "/me").with(jwt().jwt(j -> j.subject(OWNER_ID.toString()))))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.title").value("Not Found"))
@@ -84,9 +85,9 @@ class UserProfileControllerTest {
         persistProfile(OWNER_ID, "Alice", "alice bio", "http://example.com/a.png");
         persistProfile(OTHER_OWNER_ID, "Bob", "bob bio", "http://example.com/b.png");
 
-        mockMvc.perform(get(BASE_PATH + "/me").with(jwt().jwt(j -> j.subject(OTHER_OWNER_ID))))
+        mockMvc.perform(get(BASE_PATH + "/me").with(jwt().jwt(j -> j.subject(OTHER_OWNER_ID.toString()))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(OTHER_OWNER_ID))
+                .andExpect(jsonPath("$.id").value(OTHER_OWNER_ID.toString()))
                 .andExpect(jsonPath("$.displayName").value("Bob"));
     }
 
@@ -99,11 +100,11 @@ class UserProfileControllerTest {
                 """;
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(OWNER_ID))
+                .andExpect(jsonPath("$.id").value(OWNER_ID.toString()))
                 .andExpect(jsonPath("$.displayName").value("Bob"))
                 .andExpect(jsonPath("$.avatarUrl").value("http://example.com/b.png"))
                 .andExpect(jsonPath("$.bio").value("a new bio"))
@@ -124,11 +125,11 @@ class UserProfileControllerTest {
                 """;
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(OWNER_ID))
+                .andExpect(jsonPath("$.id").value(OWNER_ID.toString()))
                 .andExpect(jsonPath("$.displayName").value("New Name"))
                 .andExpect(jsonPath("$.avatarUrl").value("http://example.com/new.png"))
                 .andExpect(jsonPath("$.bio").value("new bio"))
@@ -151,14 +152,14 @@ class UserProfileControllerTest {
                 """;
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.version").value(0));
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isOk())
@@ -185,7 +186,7 @@ class UserProfileControllerTest {
                 """;
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest())
@@ -200,7 +201,7 @@ class UserProfileControllerTest {
                 """;
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest())
@@ -213,7 +214,7 @@ class UserProfileControllerTest {
         String body = String.format("{\"displayName\":\"%s\",\"avatarUrl\":null,\"bio\":null}", tooLong);
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest())
@@ -226,7 +227,7 @@ class UserProfileControllerTest {
         String body = String.format("{\"displayName\":\"%s\",\"avatarUrl\":null,\"bio\":null}", atLimit);
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
@@ -239,7 +240,7 @@ class UserProfileControllerTest {
         String body = String.format("{\"displayName\":\"Bob\",\"avatarUrl\":\"%s\",\"bio\":null}", tooLong);
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest())
@@ -252,7 +253,7 @@ class UserProfileControllerTest {
         String body = String.format("{\"displayName\":\"Bob\",\"avatarUrl\":\"%s\",\"bio\":null}", atLimit);
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
@@ -265,7 +266,7 @@ class UserProfileControllerTest {
         String body = String.format("{\"displayName\":\"Bob\",\"avatarUrl\":null,\"bio\":\"%s\"}", tooLong);
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest())
@@ -278,7 +279,7 @@ class UserProfileControllerTest {
         String body = String.format("{\"displayName\":\"Bob\",\"avatarUrl\":null,\"bio\":\"%s\"}", atLimit);
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
@@ -294,11 +295,11 @@ class UserProfileControllerTest {
                 """;
 
         mockMvc.perform(put(BASE_PATH + "/me")
-                        .with(jwt().jwt(j -> j.subject(OWNER_ID)))
+                        .with(jwt().jwt(j -> j.subject(OWNER_ID.toString())))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(OWNER_ID));
+                .andExpect(jsonPath("$.id").value(OWNER_ID.toString()));
 
         UserProfile other = userProfileRepository.findById(OTHER_OWNER_ID).orElseThrow();
         assertEquals("Untouched", other.getDisplayName());
