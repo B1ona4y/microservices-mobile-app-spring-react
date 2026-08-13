@@ -7,6 +7,6 @@ import java.util.UUID;
 import com.synccore.synccore.SyncRepository;
 
 public interface PageRepository extends SyncRepository<Page> {
-    Optional<Page> findByIdAndOwner(UUID id, String owner);
-    List<Page> findByOwnerAndDeletedFalse(String owner);
+    Optional<Page> findByIdAndOwner(UUID id, UUID owner);
+    List<Page> findByOwnerAndDeletedFalse(UUID owner);
 }

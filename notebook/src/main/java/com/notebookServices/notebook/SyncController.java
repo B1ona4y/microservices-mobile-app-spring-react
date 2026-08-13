@@ -1,5 +1,7 @@
 package com.notebookServices.notebook;
 
+import java.util.UUID;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +26,7 @@ public class SyncController {
     @PostMapping("/sync")
     public CombinedSyncResponse sync(@RequestBody CombinedSyncRequest req,
                                     @AuthenticationPrincipal Jwt jwt) {
-        String owner = jwt.getSubject();
+        UUID owner = UUID.fromString(jwt.getSubject());
         return new CombinedSyncResponse(
             notebooks.sync(req.notebooks(), owner),
             pages.sync(req.pages(), owner)
