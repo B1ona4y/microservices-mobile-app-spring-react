@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.4.0...v1.5.0) (2026-08-14)
+
+
+### Features
+
+* Notebooks id type change from String to UUID with generation style TIME ([8cd138d](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/8cd138d7409cd9c76924a1fd0457a1d618777635))
+* oauth2 id type changed from Long to UUID with Generation style TIME ([6297486](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/6297486acdfdedaf076bfc1cd3195dd0eeeec34a))
+* Profile id type change from String to UUID with generation style TIME ([47b770d](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/47b770d54024136015242f1d916bfb7a3cfddb8d))
+* refresh token id type change from Long/string to UUID with generation style TIME ([e318807](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/e318807109c8bd08cde61089dc9ca105da26c455))
+
 ## [1.4.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.3.1...v1.4.0) (2026-08-09)
 
 
