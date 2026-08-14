@@ -28,7 +28,7 @@ public abstract class SyncService<T extends Syncable> {
     }
 
     @Transactional
-    public SyncResponse<T> sync(SyncRequest<T> request, String owner) {
+    public SyncResponse<T> sync(SyncRequest<T> request, UUID owner) {
         List<T> accepted = new ArrayList<>();
         List<RejectedRecord> rejected = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public abstract class SyncService<T extends Syncable> {
         return new SyncResponse<>(serverChanges, newSince, hasMore, rejected);
     }
 
-    private void applyChange(List<T> incoming, String owner) {
+    private void applyChange(List<T> incoming, UUID owner) {
         if (incoming.isEmpty()) {
             return;
         }

@@ -23,7 +23,7 @@ import lombok.experimental.SuperBuilder;
 public abstract class SyncableEntity implements Syncable {
     @Id private UUID id;
     @Column(nullable = false)
-    private String owner;
+    private UUID owner;
     private long version;
     private boolean deleted;
     @Column(nullable = false)

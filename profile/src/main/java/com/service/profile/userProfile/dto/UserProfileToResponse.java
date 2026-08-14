@@ -1,9 +1,10 @@
 package com.service.profile.userProfile.dto;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public record UserProfileToResponse(
-    String id,
+    UUID id,
     String displayName,
     String avatarUrl,
     String bio,
