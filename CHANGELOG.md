@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.5.0...v1.6.0) (2026-08-17)
+
+
+### Features
+
+* cascade deletion of pages ([04886ff](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/04886ff30009cb07589669609dbdc2fdd1f8767b))
+* lib got new methods to separate actions before and anfter sync happens ([925ad1a](https://github.com/B1ona4y/microservices-mobile-app-spring-react/commit/925ad1a87baeaf84d423200f864c0d699d63be53))
+
 ## [1.5.0](https://github.com/B1ona4y/microservices-mobile-app-spring-react/compare/v1.4.0...v1.5.0) (2026-08-14)
 
 
