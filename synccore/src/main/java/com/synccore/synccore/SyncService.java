@@ -27,6 +27,24 @@ public abstract class SyncService<T extends Syncable> {
         return 500;
     }
 
+    /**
+     * Runs on validated incoming rows before they are merged, and may mutate them.
+     * Lets a subclass enforce rules this generic engine knows nothing about —
+     * for example rejecting or re-flagging a row based on some other entity's state.
+     */
+    protected void beforeApply(List<T> incoming, String owner) {
+        // no-op by default
+    }
+
+    /**
+     * Runs on the rows that were actually written — not the ones merely offered,
+     * since some are dropped on version or ownership. Lets a subclass cascade a
+     * change to entities the engine does not know exist.
+     */
+    protected void afterApply(List<T> saved, String owner) {
+        // no-op by default
+    }
+
     @Transactional
     public SyncResponse<T> sync(SyncRequest<T> request, String owner) {
         List<T> accepted = new ArrayList<>();
@@ -40,7 +58,8 @@ public abstract class SyncService<T extends Syncable> {
             }
             accepted.add(incoming);
         }
-        applyChange(accepted, owner);
+        beforeApply(accepted, owner);
+        afterApply(applyChange(accepted, owner), owner);
 
         int limit = pullLimit();
         List<T> serverChanges = repository().findByOwnerAndUpdatedAtAfterOrderByUpdatedAtAsc(
@@ -54,9 +73,9 @@ public abstract class SyncService<T extends Syncable> {
         return new SyncResponse<>(serverChanges, newSince, hasMore, rejected);
     }
 
-    private void applyChange(List<T> incoming, String owner) {
+    private List<T> applyChange(List<T> incoming, String owner) {
         if (incoming.isEmpty()) {
-            return;
+            return List.of();
         }
 
         List<UUID> ids = incoming.stream().map(Syncable::getId).toList();
@@ -87,5 +106,6 @@ public abstract class SyncService<T extends Syncable> {
         }
 
         repository().saveAll(toSave);
+        return toSave;
     }
 }
