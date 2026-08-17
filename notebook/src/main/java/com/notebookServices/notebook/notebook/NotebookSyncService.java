@@ -44,7 +44,7 @@ public class NotebookSyncService extends SyncService<Notebook> {
      * version or ownership never takes its pages down with it.
      */
     @Override
-    protected void afterApply(List<Notebook> saved, String owner) {
+    protected void afterApply(List<Notebook> saved, UUID owner) {
         List<UUID> deletedNotebookIds = saved.stream()
                 .filter(Notebook::isDeleted)
                 .map(Notebook::getId)

@@ -9,6 +9,6 @@ import com.synccore.synccore.SyncRepository;
 
 public interface NotebookRepository extends SyncRepository<Notebook> {
     Optional<Notebook> findByIdAndOwner(UUID id, UUID owner);
-    List<Notebook> findByIdInAndOwnerAndDeletedTrue(Collection<UUID> ids, String owner);
+    List<Notebook> findByIdInAndOwnerAndDeletedTrue(Collection<UUID> ids, UUID owner);
     List<Notebook> findByOwnerAndDeletedFalse(UUID owner);
 }

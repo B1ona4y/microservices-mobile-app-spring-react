@@ -48,7 +48,7 @@ public class PageSyncService extends SyncService<Page> {
      * arrive alive and outlive its notebook forever.
      */
     @Override
-    protected void beforeApply(List<Page> incoming, String owner) {
+    protected void beforeApply(List<Page> incoming, UUID owner) {
         if (incoming.isEmpty()) {
             return;
         }
