@@ -1,5 +1,7 @@
 package com.service.profile.userProfile;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,12 +30,12 @@ public class UserProfileController {
 
     @GetMapping("/me")
     public UserProfileToResponse me(@AuthenticationPrincipal Jwt jwt) {
-        return userProfileMapper.toResponse(userProfileService.findById(jwt.getSubject()));
+        return userProfileMapper.toResponse(userProfileService.findById(UUID.fromString(jwt.getSubject())));
     }
 
     @PutMapping("/me")
     public ResponseEntity<UserProfileToResponse> upsertUserProfile(@Valid @RequestBody UserProfileToRequest req, @AuthenticationPrincipal Jwt jwt) {
-        UpsertResult result = userProfileService.upsert(req, jwt.getSubject());
+        UpsertResult result = userProfileService.upsert(req, UUID.fromString(jwt.getSubject()));
         HttpStatus status = switch (result.outcome()) {
             case CREATED -> HttpStatus.CREATED;
             case UPDATED -> HttpStatus.OK;

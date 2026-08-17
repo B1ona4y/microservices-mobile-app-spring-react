@@ -15,11 +15,11 @@ public class PageService {
         this.pageRepository = pageRepository;
     }
 
-    public Optional<Page> findByIdAndOwner(UUID id, String owner) {
+    public Optional<Page> findByIdAndOwner(UUID id, UUID owner) {
         return pageRepository.findByIdAndOwner(id, owner);
     }
 
-    public List<Page> findByOwnerAndDeletedFalse(String owner) {
+    public List<Page> findByOwnerAndDeletedFalse(UUID owner) {
         return pageRepository.findByOwnerAndDeletedFalse(owner);
     }
 }

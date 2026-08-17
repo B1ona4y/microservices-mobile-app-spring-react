@@ -32,7 +32,7 @@ public abstract class SyncService<T extends Syncable> {
      * Lets a subclass enforce rules this generic engine knows nothing about —
      * for example rejecting or re-flagging a row based on some other entity's state.
      */
-    protected void beforeApply(List<T> incoming, String owner) {
+    protected void beforeApply(List<T> incoming, UUID owner) {
         // no-op by default
     }
 
@@ -41,12 +41,12 @@ public abstract class SyncService<T extends Syncable> {
      * since some are dropped on version or ownership. Lets a subclass cascade a
      * change to entities the engine does not know exist.
      */
-    protected void afterApply(List<T> saved, String owner) {
+    protected void afterApply(List<T> saved, UUID owner) {
         // no-op by default
     }
 
     @Transactional
-    public SyncResponse<T> sync(SyncRequest<T> request, String owner) {
+    public SyncResponse<T> sync(SyncRequest<T> request, UUID owner) {
         List<T> accepted = new ArrayList<>();
         List<RejectedRecord> rejected = new ArrayList<>();
 
@@ -73,7 +73,8 @@ public abstract class SyncService<T extends Syncable> {
         return new SyncResponse<>(serverChanges, newSince, hasMore, rejected);
     }
 
-    private List<T> applyChange(List<T> incoming, String owner) {
+
+    private List<T> applyChange(List<T> incoming, UUID owner) {
         if (incoming.isEmpty()) {
             return List.of();
         }

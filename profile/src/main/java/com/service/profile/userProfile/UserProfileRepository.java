@@ -1,6 +1,8 @@
 package com.service.profile.userProfile;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserProfileRepository extends JpaRepository<UserProfile, String>{
+public interface UserProfileRepository extends JpaRepository<UserProfile, UUID>{
 }

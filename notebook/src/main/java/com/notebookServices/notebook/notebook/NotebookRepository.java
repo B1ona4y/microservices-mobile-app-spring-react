@@ -8,9 +8,7 @@ import java.util.UUID;
 import com.synccore.synccore.SyncRepository;
 
 public interface NotebookRepository extends SyncRepository<Notebook> {
-    Optional<Notebook> findByIdAndOwner(UUID id, String owner);
-
-    List<Notebook> findByOwnerAndDeletedFalse(String owner);
-
+    Optional<Notebook> findByIdAndOwner(UUID id, UUID owner);
     List<Notebook> findByIdInAndOwnerAndDeletedTrue(Collection<UUID> ids, String owner);
+    List<Notebook> findByOwnerAndDeletedFalse(UUID owner);
 }

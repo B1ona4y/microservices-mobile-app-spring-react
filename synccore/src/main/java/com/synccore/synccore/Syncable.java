@@ -6,8 +6,8 @@ import java.util.UUID;
 public interface Syncable {
     UUID getId();
 
-    String getOwner();
-    void setOwner(String owner);
+    UUID getOwner();
+    void setOwner(UUID owner);
 
     long getVersion();
     boolean isDeleted();

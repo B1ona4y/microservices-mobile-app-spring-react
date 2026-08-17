@@ -15,11 +15,11 @@ public class NotebookService {
         this.notebookRepository = notebookRepository;
     }
 
-    public Optional<Notebook> findByIdAndOwner(UUID id, String owner) {
+    public Optional<Notebook> findByIdAndOwner(UUID id, UUID owner) {
         return notebookRepository.findByIdAndOwner(id, owner);
     }
 
-    public List<Notebook> findByOwnerAndDeletedFalse(String owner) {
+    public List<Notebook> findByOwnerAndDeletedFalse(UUID owner) {
         return notebookRepository.findByOwnerAndDeletedFalse(owner);
     }
 }

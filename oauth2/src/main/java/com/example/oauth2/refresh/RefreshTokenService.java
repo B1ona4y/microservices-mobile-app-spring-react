@@ -26,7 +26,7 @@ public class RefreshTokenService {
         this.refreshTtlSeconds = refreshTtlSeconds;
     }
 
-    public String issueToken(Long userId, String familyId) {
+    public String issueToken(UUID userId, UUID familyId) {
         byte[] bytes = new byte[32];
         random.nextBytes(bytes);
         String rawToken = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
@@ -44,8 +44,8 @@ public class RefreshTokenService {
         
 	}
 
-    public String issueNewFamily(Long userId) {
-        return issueToken(userId, UUID.randomUUID().toString());
+    public String issueNewFamily(UUID userId) {
+        return issueToken(userId, UUID.randomUUID());
     }
 
     public RefreshToken rotate(String presentedRawToken) {
@@ -71,7 +71,7 @@ public class RefreshTokenService {
             .ifPresent(token -> revokeFamily(token.getFamilyId()));
     }
     
-    public void revokeFamily(String familyId) {
+    public void revokeFamily(UUID familyId) {
         List<RefreshToken> family = repo.findByFamilyId(familyId);
         family.forEach(t -> t.setRevoked(true));
         repo.saveAll(family);

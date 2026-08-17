@@ -11,5 +11,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface SyncRepository<T extends Syncable> extends JpaRepository<T, UUID> {
     List<T> findByOwnerAndUpdatedAtAfterOrderByUpdatedAtAsc(
-            String owner, Instant since, Pageable pageable);
+            UUID owner, Instant since, Pageable pageable);
 }
